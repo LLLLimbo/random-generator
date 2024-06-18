@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Random Generator</title>
+</head>
+
+<body>
+<button id="getRandom">获取随机字符串</button>
+<div id="result"></div>
+
+<script>
+    window.onload = function () {
+        var btn = document.getElementById('getRandom');
+        var result = document.getElementById('result');
+        btn.onclick = function () {
+            fetch('http://localhost:3000/api/random', {
+                method: 'GET',
+            })
+                .then(checkStatus)
+                .then(function (response) {
+                    return response.text();
+                })
+                .then(function (data) {
+                    result.innerHTML = data;
+                })
+                .catch(function (error) {
+                    console.log('Error:', error);
+                });
+        };
+    };
+
+    function checkStatus(response) {
+        if (response.status === 401) {
+            fetch('http://localhost:29705/idc/redirect/login?app_id=random-generator-1')
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.redirect) {
+                        window.location.href = data.redirect;
+                    }
+                });
+        } else {
+            return response;
+        }
+    }
+
+</script>
+</body>
+
+</html>
